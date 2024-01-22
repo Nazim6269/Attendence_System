@@ -2,11 +2,13 @@ const successResponse = (
   res,
   statusCode = 400,
   message = {},
-  success = true
+  success = true,
+  payload = {}
 ) => {
   return res.status(statusCode).json({
     message,
     success,
+    payload,
   });
 };
 

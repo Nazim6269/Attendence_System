@@ -7,17 +7,30 @@ const userModel = new Schema({
   },
   password: {
     type: String,
+    minlength: [6, "Password is too short"],
+
     required: true,
   },
   email: {
     type: String,
     required: true,
+    validate: {
+      validator: function (email) {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+      },
+      message: (props) => `${props.vlaue}`,
+    },
   },
   acoountStatus: {
     type: String,
+    enum: ["ACTIVE", "PENDING", "REJECTED"],
+    default: "PENDING",
+    required: true,
   },
-  Role: {
+  role: {
     type: [String],
+    required: true,
+    default: ["STUDENT"],
   },
 });
 
