@@ -1,15 +1,23 @@
-require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const connectDb = require("./helpers/dbConnect");
+const jwt = require("jsonwebtoken");
 const User = require("./models/UserModel");
 const { errorResponse, successResponse } = require("./helpers/response");
-const PORT = process.env.SERVER_PORT || 3333;
-
-const mongoURL = process.env.MONGO_URL;
-
+const { serverPort, jwtSecretKey, dbURL } = require("./secret");
+const morgan = require("morgan");
+const { authenticate } = require("./middlewares/authenticate");
 const app = express();
-app.use(express.json());
+
+//middleware Array
+const middlewareArray = [morgan("dev"), express.json()];
+
+//use middleware
+app.use(middlewareArray);
+
+app.get("/private", authenticate, async (_req, res, _next) => {
+  successResponse(res, 200, "I am private route");
+});
 
 app.post("/register", async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -31,6 +39,8 @@ app.post("/register", async (req, res, next) => {
   }
 });
 
+//TODO: Refactoreing korte hobe
+
 app.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -45,7 +55,9 @@ app.post("/login", async (req, res, next) => {
       errorResponse(res, 400, "Invalid Credentials");
     }
     delete user._doc.password;
-    successResponse(res, 200, "Successfully Login", user);
+    //create token
+    const token = jwt.sign(user._doc, jwtSecretKey, { expiresIn: "2h" });
+    successResponse(res, 200, "Successfully Login", token);
   } catch (error) {
     next(error);
   }
@@ -58,9 +70,11 @@ app.use((error, _req, res, _next) => {
 });
 
 //app is linstening here
-connectDb(mongoURL).then(() => {
+connectDb(dbURL).then(() => {
   console.log("DB connected Successfully");
-  app.listen(PORT, () => {
-    console.log(`Server is running successfylly at http://localhost:${PORT}`);
+  app.listen(serverPort, () => {
+    console.log(
+      `Server is running successfylly at http://localhost:${serverPort}`
+    );
   });
 });
