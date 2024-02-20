@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/UserModel");
 const { successResponse, errorResponse } = require("../helpers/response");
 const { jwtSecretKey } = require("../secret");
+const { registerService, loginService } = require("../services/authService");
 
 //private controller
 const privateController = async (_req, res, _next) => {
@@ -19,13 +20,7 @@ const registerController = async (req, res, next) => {
     errorResponse(res, 400, "Insufficeint Data");
   }
   try {
-    let user = new User({ name, password, email });
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(password, salt);
-    user.password = hashedPass;
-    await user.save();
-
+    const user = await registerService({ name, email, password });
     successResponse(res, 201, "User created Successfuly");
   } catch (error) {
     next(error);
@@ -37,18 +32,7 @@ const loginController = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      errorResponse(res, 400, "Invalid Credentials");
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      errorResponse(res, 400, "Invalid Credentials");
-    }
-    delete user._doc.password;
-    //create token
-    const token = jwt.sign(user._doc, jwtSecretKey, { expiresIn: "2h" });
+    const user = await loginService(email, password);
     successResponse(res, 200, "Successfully Login", token);
   } catch (error) {
     next(error);

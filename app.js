@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const connectDb = require("./helpers/dbConnect");
 const { errorResponse } = require("./helpers/response");
 const { serverPort, dbURL } = require("./secret");
-const { router } = require("./routes/router");
+const router = require("./routes/indexRoue");
 
 //middleware Array
 const middlewareArray = [morgan("dev"), express.json()];

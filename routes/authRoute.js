@@ -12,4 +12,4 @@ router.get("/private", authenticate, privateController);
 router.post("/register", registerController);
 router.post("/login", loginController);
 
-module.exports = { router };
+module.exports = router;
