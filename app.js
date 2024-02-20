@@ -26,7 +26,7 @@ connectDb(dbURL).then(() => {
   console.log("DB connected Successfully");
   app.listen(serverPort, () => {
     console.log(
-      `Server is running successfylly at http://localhost:${serverPort}`
+      `Server is running successfully at http://localhost:${serverPort}`
     );
   });
 });

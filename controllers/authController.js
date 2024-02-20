@@ -1,8 +1,4 @@
-//external imports
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 //internal imports
-const User = require("../models/UserModel");
 const { successResponse, errorResponse } = require("../helpers/response");
 const { jwtSecretKey } = require("../secret");
 const { registerService, loginService } = require("../services/authService");
