@@ -28,7 +28,7 @@ const loginController = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await loginService(email, password);
+    const token = await loginService(email, password);
     successResponse(res, 200, "Successfully Login", token);
   } catch (error) {
     next(error);

@@ -1,8 +1,10 @@
 //external imports
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+//internal imports
 const User = require("../models/UserModel");
 const { errorResponse } = require("../helpers/response");
-//internal imports
+const { jwtSecretKey } = require("../secret");
 
 //registerSevice
 const registerService = async (name, password, email) => {
@@ -28,6 +30,7 @@ const loginService = async (email, password) => {
   delete user._doc.password;
   //create token
   const token = jwt.sign(user._doc, jwtSecretKey, { expiresIn: "2h" });
+  return token;
 };
 
 module.exports = { registerService, loginService };
