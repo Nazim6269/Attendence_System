@@ -21,13 +21,13 @@ const userModel = new Schema({
       message: (props) => `${props.vlaue}`,
     },
   },
-  acoountStatus: {
+  accountStatus: {
     type: String,
     enum: ["ACTIVE", "PENDING", "REJECTED"],
     default: "PENDING",
     required: true,
   },
-  role: {
+  roles: {
     type: [String],
     required: true,
     default: ["STUDENT"],

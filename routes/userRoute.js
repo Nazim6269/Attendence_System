@@ -1,4 +1,9 @@
-const { getAllUsers, getUserById } = require("../controllers/userController");
+const {
+  getAllUsers,
+  getUserById,
+  postNewUser,
+  deleteUserById,
+} = require("../controllers/userController");
 
 const router = require("express").Router();
 
@@ -9,6 +14,14 @@ const router = require("express").Router();
  * @visibility private
  */
 router.get("/:userId", getUserById);
+
+/**
+ * update user
+ * @route /api/v1/users
+ * @method POST
+ * @visibility private
+ */
+router.post("/", postNewUser);
 
 /**
  * update user
@@ -31,7 +44,7 @@ router.patch("/:userId", () => {});
  * @method DELETE
  * @visibility private
  */
-router.delete("/:userId", () => {});
+router.delete("/:userId", deleteUserById);
 
 /**
  * find all users

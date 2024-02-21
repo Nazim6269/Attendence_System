@@ -10,13 +10,19 @@ const privateController = async (_req, res, _next) => {
 
 //register controller
 const registerController = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, roles, accountStatus } = req.body;
 
   if (!name || !email || !password) {
     errorResponse(res, 400, "Insufficeint Data");
   }
   try {
-    const user = await registerService({ name, email, password });
+    const user = await registerService(
+      name,
+      email,
+      password,
+      roles,
+      accountStatus
+    );
     successResponse(res, 201, "User created Successfuly");
   } catch (error) {
     next(error);

@@ -5,14 +5,22 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/UserModel");
 const { errorResponse } = require("../helpers/response");
 const { jwtSecretKey } = require("../secret");
+const { createUserService } = require("./userService");
 
 //registerSevice
-const registerService = async (name, password, email) => {
-  let user = new User({ name, password, email });
+const registerService = async (name, password, email, roles, accountstatus) => {
+  let user = await createUserService(
+    name,
+    password,
+    email,
+    roles,
+    accountstatus
+  );
 
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(password, salt);
   user.password = hashedPass;
+
   await user.save();
 };
 
