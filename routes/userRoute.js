@@ -1,4 +1,4 @@
-const { getAllUsers } = require("../controllers/userController");
+const { getAllUsers, getUserById } = require("../controllers/userController");
 
 const router = require("express").Router();
 
@@ -8,7 +8,7 @@ const router = require("express").Router();
  * @method GET
  * @visibility private
  */
-router.get("/:userId", () => {});
+router.get("/:userId", getUserById);
 
 /**
  * update user
