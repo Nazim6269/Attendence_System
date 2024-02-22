@@ -30,11 +30,16 @@ const registerController = async (req, res, next) => {
 };
 
 //login controller
+//TODO: have to complete login functionality, lectrue: last portion of 24 and 24
 const loginController = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
     const token = await loginService(email, password);
+    if (!token) {
+      errorResponse(res, 400, "Failed to login");
+    }
+    console.log("1");
     successResponse(res, 200, "Successfully Login", token);
   } catch (error) {
     next(error);

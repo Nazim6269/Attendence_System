@@ -31,10 +31,13 @@ const createUserService = async (
 };
 
 //delete user service
-const deleteUserService = (user) => {};
+const deleteUserService = async (id) => {
+  await User.findByIdAndDelete(id);
+};
 
 module.exports = {
   findUsersService,
   findUserByPropertyService,
   createUserService,
+  deleteUserService,
 };

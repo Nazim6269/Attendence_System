@@ -3,6 +3,7 @@ const {
   getUserById,
   postNewUser,
   deleteUserById,
+  patchUserById,
 } = require("../controllers/userController");
 
 const router = require("express").Router();
@@ -36,7 +37,7 @@ router.put("/:userId", () => {});
  * @method PATCH
  * @visibility private
  */
-router.patch("/:userId", () => {});
+router.patch("/:userId", patchUserById);
 
 /**
  * delete user

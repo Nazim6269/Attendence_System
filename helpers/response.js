@@ -5,7 +5,7 @@ const successResponse = (
   success = true,
   payload = {}
 ) => {
-  return res.status(statusCode).json({
+  return res.status(statusCode).send({
     message,
     success,
     payload,
@@ -18,7 +18,7 @@ const errorResponse = (
   message = "",
   success = false
 ) => {
-  return res.status(statusCode).json({
+  return res.status(statusCode).send({
     message,
     success,
   });

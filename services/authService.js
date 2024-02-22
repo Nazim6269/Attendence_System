@@ -1,20 +1,21 @@
 //external imports
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const createError = require("http-errors");
 //internal imports
 const User = require("../models/UserModel");
-const { errorResponse } = require("../helpers/response");
+
 const { jwtSecretKey } = require("../secret");
 const { createUserService } = require("./userService");
 
 //registerSevice
-const registerService = async (name, password, email, roles, accountstatus) => {
+const registerService = async (name, password, email, roles, accountStatus) => {
   let user = await createUserService(
     name,
     password,
     email,
     roles,
-    accountstatus
+    accountStatus
   );
 
   const salt = await bcrypt.genSalt(10);
@@ -24,21 +25,30 @@ const registerService = async (name, password, email, roles, accountstatus) => {
   await user.save();
 };
 
-//loginService
+//loginService function starts from here
 const loginService = async (email, password) => {
-  const user = await User.findOne({ email });
+  try {
+    const user = await User.findOne({ email });
 
-  if (!user) {
-    errorResponse(res, 400, "Invalid Credentials");
+    if (!user) {
+      throw createError(400, "Invalid Credentials");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("2", isMatch);
+
+    if (!isMatch) {
+      throw createError(400, "Incorrect Password");
+    }
+    delete user._doc.password;
+    //create token
+
+    const token = jwt.sign(user._doc, jwtSecretKey, { expiresIn: "2h" });
+    console.log("3", token);
+    return token;
+  } catch (error) {
+    console.log(error);
   }
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    errorResponse(res, 400, "Invalid Credentials");
-  }
-  delete user._doc.password;
-  //create token
-  const token = jwt.sign(user._doc, jwtSecretKey, { expiresIn: "2h" });
-  return token;
 };
 
 module.exports = { registerService, loginService };

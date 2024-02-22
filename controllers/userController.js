@@ -3,12 +3,14 @@ const {
   findUsersService,
   findUserByPropertyService,
   createUserService,
+  deleteUserService,
 } = require("../services/userService");
 
 //get all users
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await findUsersService();
+
     if (!users) {
       errorResponse(res, 404, false, "Failed to fetch users");
     }
@@ -27,6 +29,7 @@ const getUserById = async (req, res, next) => {
     if (!user) {
       errorResponse(res, 400, "User not found");
     }
+
     successResponse(res, 200, "successfully user founded", user);
   } catch (error) {
     next(error);
@@ -62,11 +65,38 @@ const deleteUserById = async (req, res, next) => {
     if (!user) {
       errorResponse(res, 404, "User not found");
     }
-    user.remove();
+    deleteUserService(user._id);
     successResponse(res, 203, "User Deleted successfully");
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = { getAllUsers, getUserById, postNewUser, deleteUserById };
+//patch user by Id
+const patchUserById = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { name, roles, accountStatus } = req.body;
+
+    const user = await findUserByPropertyService("_id", userId);
+    if (!user) {
+      errorResponse(res, 404, "User Not found ");
+    }
+    user.name = name ?? user.name;
+    user.roles = roles ?? user.roles;
+    user.accountStatus = accountStatus ?? user.accountStatus;
+
+    await user.save();
+    successResponse(res, 200, "Successfully updated user info");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getAllUsers,
+  getUserById,
+  postNewUser,
+  deleteUserById,
+  patchUserById,
+};
